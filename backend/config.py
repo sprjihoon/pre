@@ -2,8 +2,8 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+asyncpg://prepacking:prepacking1234@localhost:5432/prepacking"
-    SYNC_DATABASE_URL: str = "postgresql://prepacking:prepacking1234@localhost:5432/prepacking"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./prepacking.db"
+    SYNC_DATABASE_URL: str = "sqlite:///./prepacking.db"
     UPLOAD_DIR: str = "uploads"
     MODEL_STORE_DIR: str = "../model_store"
     OPENAI_API_KEY: str = ""

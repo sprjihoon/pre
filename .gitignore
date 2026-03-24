@@ -43,5 +43,8 @@ model_store/*.onnx
 # Alembic
 alembic/versions/__pycache__/
 
+# SQLite
+*.db
+
 # Logs
 *.log
