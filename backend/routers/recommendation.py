@@ -7,7 +7,7 @@ from schemas.recommendation import (
     RecommendationOut, ApprovalRequest, ApprovalOut,
     ExecutionRequest, ExecutionUpdateRequest, ExecutionOut,
 )
-from services.recommendation_service import (
+from services.recommendation import (
     get_recommendations, approve_recommendation,
     create_execution, update_execution,
 )

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from schemas.analysis import SkuAnalysisOut, CombinationAnalysisOut
-from services.analysis_service import (
+from services.analysis import (
     run_sku_analysis, run_combination_analysis,
     get_sku_analyses, get_combination_analyses,
 )

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from schemas.validation import ReportSummary
-from services.validation_service import get_report_summary
+from services.validation import get_report_summary
 
 router = APIRouter(prefix="/api/report", tags=["리포트"])
 

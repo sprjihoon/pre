@@ -1,54 +1,9 @@
-"""작업 지시서 HTML 생성 서비스"""
+"""작업 지시서 HTML 템플릿"""
 
 from datetime import date
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from models.recommendation import Recommendation
-from models.approval import Approval
 
 
-async def generate_print_html(
-    db: AsyncSession,
-    target_date: date,
-    supplier_code: str | None = None,
-) -> str:
-    q = (
-        select(Recommendation, Approval)
-        .join(Approval, Recommendation.id == Approval.recommendation_id)
-        .where(
-            Recommendation.target_date == target_date,
-            Approval.action.in_(["approved", "modified"]),
-        )
-    )
-    if supplier_code:
-        q = q.where(Recommendation.supplier_code == supplier_code)
-    q = q.order_by(Recommendation.supplier_code, Recommendation.target_type, Recommendation.target_key)
-
-    result = await db.execute(q)
-    rows = result.all()
-
-    grouped: dict[str, list] = {}
-    for rec, apv in rows:
-        if rec.supplier_code not in grouped:
-            grouped[rec.supplier_code] = []
-        grouped[rec.supplier_code].append({
-            "target_type": "SKU" if rec.target_type == "sku" else "조합",
-            "target_key": rec.target_key,
-            "qty": apv.approved_qty or rec.final_recommended_qty,
-            "risk": rec.risk_level or "-",
-            "memo": apv.memo or "",
-        })
-
-    html_parts = [_html_header(target_date)]
-    for sup_code, items in grouped.items():
-        html_parts.append(_html_supplier_section(sup_code, items))
-    html_parts.append(_html_footer())
-
-    return "\n".join(html_parts)
-
-
-def _html_header(target_date: date) -> str:
+def html_header(target_date: date) -> str:
     return f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -84,7 +39,7 @@ def _html_header(target_date: date) -> str:
 </div>"""
 
 
-def _html_supplier_section(supplier_code: str, items: list[dict]) -> str:
+def html_supplier_section(supplier_code: str, items: list[dict]) -> str:
     rows = ""
     for i, item in enumerate(items, 1):
         rows += f"""
@@ -122,7 +77,7 @@ def _html_supplier_section(supplier_code: str, items: list[dict]) -> str:
 </div>"""
 
 
-def _html_footer() -> str:
+def html_footer() -> str:
     return """
 <div class="footer">
   본 지시서는 프리패킹 예측 시스템에서 자동 생성되었습니다.

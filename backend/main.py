@@ -3,7 +3,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import engine, Base
-from routers import upload, analysis, rules, recommendation, location, stock, validation, report, print as print_router, deep_learning, llm, profile
+from routers import (
+    upload, analysis, rules, recommendation,
+    location, stock, validation, report,
+    print as print_router, deep_learning, llm, profile, dashboard,
+)
 
 
 @asynccontextmanager
@@ -39,33 +43,9 @@ app.include_router(print_router.router)
 app.include_router(deep_learning.router)
 app.include_router(llm.router)
 app.include_router(profile.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/api/health")
 async def health():
     return {"status": "ok"}
-
-
-@app.get("/api/dashboard/summary")
-async def dashboard_summary():
-    from sqlalchemy import select, func
-    from database import async_session
-    from models.upload import UploadFile
-    from models.recommendation import Recommendation
-    from models.stock import PrepackStock
-    from models.validation import ValidationResult
-
-    async with async_session() as db:
-        uploads = await db.execute(select(func.count(UploadFile.id)).where(UploadFile.is_active == True))
-        recs = await db.execute(select(func.count(Recommendation.id)))
-        pending = await db.execute(select(func.count(Recommendation.id)).where(Recommendation.status == "pending"))
-        stocks = await db.execute(select(func.count(PrepackStock.id)).where(PrepackStock.status == "active"))
-        vals = await db.execute(select(func.avg(ValidationResult.accuracy)))
-
-        return {
-            "active_uploads": uploads.scalar() or 0,
-            "total_recommendations": recs.scalar() or 0,
-            "pending_recommendations": pending.scalar() or 0,
-            "active_stocks": stocks.scalar() or 0,
-            "avg_accuracy": round(float(vals.scalar() or 0), 4),
-        }

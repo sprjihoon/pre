@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from schemas.recommendation import RecommendationOut
-from services.rules_engine import generate_rule_based_recommendations
+from services.rules import generate_rule_based_recommendations
 
 router = APIRouter(prefix="/api/rules", tags=["규칙기반 엔진"])
 

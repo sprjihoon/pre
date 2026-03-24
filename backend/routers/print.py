@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
-from services.print_service import generate_print_html
+from services.print import generate_print_html
 
 router = APIRouter(prefix="/api/print", tags=["출력"])
 

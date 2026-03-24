@@ -1,6 +1,6 @@
 from datetime import date
 from sqlalchemy.ext.asyncio import AsyncSession
-from services.validation_service import get_validation_results, get_report_summary
+from services.validation import get_validation_results, get_report_summary
 from schemas.validation import ReportSummary
 
 
