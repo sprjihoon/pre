@@ -22,7 +22,7 @@ export default function UploadPage() {
 
   const handleUpload = async () => {
     const f = fileRef.current?.files?.[0];
-    if (!f) return;
+    if (!f) { alert("파일을 먼저 선택하세요."); return; }
     setUploading(true);
     try {
       await uploadApi.upload(f);
